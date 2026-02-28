@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+requests
+beautifulsoup4
+jinja2
+sqlalchemy
+aiohttp
+psycopg2-binary
+python-dotenv
+sentence-transformers
+pgvector
+playwright
+playwright
+openai
+PyMuPDF
+slowapi
