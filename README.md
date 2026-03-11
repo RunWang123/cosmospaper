@@ -128,7 +128,7 @@ npm run dev
 
 A pre-populated PostgreSQL dump with 54,000+ papers is available for download:
 
-**[Download cosmospaper_db.dump](YOUR_GOOGLE_DRIVE_LINK_HERE)** (approx. 230 MB)
+**[Download cosmospaper_db.dump](https://drive.google.com/file/d/18oByehfGdHiCvhOQFrF-9sjxeyZqRxU3/view?usp=sharing)** (approx. 230 MB)
 
 To restore:
 
