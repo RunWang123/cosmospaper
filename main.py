@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks
+from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks, Header
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
@@ -13,7 +13,7 @@ import json
 import os
 from pydantic import BaseModel
 import fitz
-from openai import AzureOpenAI
+from litellm import completion
 import requests
 import io
 
@@ -27,6 +27,9 @@ class CopilotSummarizeRequest(BaseModel):
 
 class CopilotBibtexRequest(BaseModel):
     paper_ids: List[str]
+
+class CopilotChatRequest(BaseModel):
+    messages: List[dict]
 
 # Import embedding functions only if PostgreSQL is available
 if IS_POSTGRES:
@@ -823,13 +826,17 @@ async def copilot_summarize_pdf(request: Request, req: CopilotSummarizeRequest, 
         if not paper.abstract:
             full_text += "\n\n(Note: Full PDF and abstract are not available. Provide the best analysis based on the title and metadata.)"
 
+    provider_header = request.headers.get("x-llm-provider")
+    key_header = request.headers.get("x-llm-api-key")
+    model_name = request.headers.get("x-llm-model")
+    
+    if not provider_header or not key_header or not model_name:
+        raise HTTPException(status_code=401, detail="Missing API Key, Model, or Provider in headers. Please configure Copilot settings.")
+
     try:
-        client = AzureOpenAI(
-            api_key=os.environ.get("AZURE_OPENAI_API_KEY", "dummy"),
-            api_version="2024-02-15-preview",
-            azure_endpoint=os.environ.get("AZURE_OPENAI_ENDPOINT", "https://your-azure-endpoint.openai.azure.com/")
-        )
-        
+        # litellm expects some providers as prefixes (like groq/llama3 or gemini/gemini-1.5)
+        # The frontend will send the exact model string litellm expects in x-llm-model.
+            
         system_prompt = "You are an expert researcher. Read the following academic paper information and answer the user's query perfectly. Give your response in Markdown format. If only metadata/abstract is available (no full text), provide the best analysis you can based on what is given."
         
         messages = [
@@ -837,13 +844,22 @@ async def copilot_summarize_pdf(request: Request, req: CopilotSummarizeRequest, 
             {"role": "user", "content": f"Paper Information:\n{full_text}\n\nQuery: {req.query}"}
         ]
         
-        completion = client.chat.completions.create(
-            model="gpt-4o-mini-model",
-            messages=messages,
-            max_tokens=1000
-        )
+        # NVIDIA NIMs require a custom API base in LiteLLM
+        kwargs = {
+            "messages": messages,
+            "api_key": key_header,
+        }
+        if provider_header.lower() == "nvidia":
+            kwargs["model"] = f"openai/{model_name.replace('nvidia/', '')}"
+            kwargs["api_base"] = "https://integrate.api.nvidia.com/v1"
+        else:
+            kwargs["model"] = model_name
+            
+        kwargs["max_tokens"] = 1000
+
+        response = completion(**kwargs)
         
-        return {"summary": completion.choices[0].message.content}
+        return {"summary": response.choices[0].message.content}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -867,13 +883,15 @@ async def copilot_generate_bibtex(request: Request, req: CopilotBibtexRequest, d
     for p in papers:
         paper_metadata += f"Title: {p.title}\nAuthors: {p.authors}\nConference: {p.conference}\nYear: {p.year}\n\n"
         
+    provider_header = request.headers.get("x-llm-provider")
+    key_header = request.headers.get("x-llm-api-key")
+    model_name = request.headers.get("x-llm-model")
+    
+    if not provider_header or not key_header or not model_name:
+        raise HTTPException(status_code=401, detail="Missing API Key, Model, or Provider in headers. Please configure Copilot settings.")
+
     try:
-        client = AzureOpenAI(
-            api_key=os.environ.get("AZURE_OPENAI_API_KEY", "dummy"),
-            api_version="2024-02-15-preview",
-            azure_endpoint=os.environ.get("AZURE_OPENAI_ENDPOINT", "https://your-azure-endpoint.openai.azure.com/")
-        )
-        
+            
         system_prompt = "You are an academic citation generator. Take the following metadata and return ONLY perfectly formatted BibTeX citations."
         
         messages = [
@@ -881,13 +899,57 @@ async def copilot_generate_bibtex(request: Request, req: CopilotBibtexRequest, d
             {"role": "user", "content": f"Metadata:\n{paper_metadata}"}
         ]
         
-        completion = client.chat.completions.create(
-            model="gpt-4o-mini-model",
-            messages=messages,
-            max_tokens=1000
-        )
+        # NVIDIA NIMs require a custom API base in LiteLLM
+        kwargs = {
+            "messages": messages,
+            "api_key": key_header,
+        }
+        if provider_header.lower() == "nvidia":
+            kwargs["model"] = f"openai/{model_name.replace('nvidia/', '')}"
+            kwargs["api_base"] = "https://integrate.api.nvidia.com/v1"
+        else:
+            kwargs["model"] = model_name
+            
+        kwargs["max_tokens"] = 1000
+
+        response = completion(**kwargs)
         
-        return {"bibtex": completion.choices[0].message.content}
+        return {"bibtex": response.choices[0].message.content}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/copilot/chat")
+async def copilot_chat(request: Request, req: CopilotChatRequest, db: Session = Depends(get_db)):
+    """General conversational chat with the Copilot context."""
+    provider_header = request.headers.get("x-llm-provider")
+    key_header = request.headers.get("x-llm-api-key")
+    model_name = request.headers.get("x-llm-model")
+    
+    if not provider_header or not key_header or not model_name:
+        raise HTTPException(status_code=401, detail="Missing API Key, Model, or Provider in headers. Please configure Copilot settings.")
+
+    try:
+        system_prompt = "You are CosmosPapers Copilot, an expert AI research assistant. You help users understand academic papers, summarize content, answer research questions, and explore scientific literature. Be concise, helpful, and use Markdown for formatting."
+        
+        # litellm expects standard openai messages format
+        llm_messages = [{"role": "system", "content": system_prompt}] + req.messages
+        
+        # NVIDIA NIMs require a custom API base in LiteLLM
+        kwargs = {
+            "messages": llm_messages,
+            "api_key": key_header,
+        }
+        if provider_header.lower() == "nvidia":
+            kwargs["model"] = f"openai/{model_name.replace('nvidia/', '')}"
+            kwargs["api_base"] = "https://integrate.api.nvidia.com/v1"
+        else:
+            kwargs["model"] = model_name
+            
+        kwargs["max_tokens"] = 1500
+
+        response = completion(**kwargs)
+        
+        return {"reply": response.choices[0].message.content}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
