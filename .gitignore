@@ -45,3 +45,7 @@ verify_scrapers.py
 # SSH Keys (NEVER commit!)
 *.pem
 *.key
+
+# Tools
+git-filter-repo
+expressions.txt
