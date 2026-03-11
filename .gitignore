@@ -4,6 +4,18 @@
 *.db-shm
 *.db-wal
 
+# Environment variables (NEVER commit!)
+.env
+.env.local
+.env.production
+.env.staging
+.env*.local
+
+# SSH Keys and Certificates (NEVER commit!)
+*.pem
+*.key
+*.p12
+*.pfx
 
 # Environment and Cache
 __pycache__/
@@ -23,6 +35,9 @@ ENV/
 *.log
 scraper.log
 
+# PID files
+*.pid
+
 # OS generated files
 .DS_Store
 .DS_Store?
@@ -32,20 +47,36 @@ scraper.log
 ehthumbs.db
 Thumbs.db
 
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node.js
+node_modules/
+.next/
+out/
+
+# Build outputs
+dist/
+build/
+
+# Vendored / copied projects
+excalidraw/
+
+# Temp / debug files
+.temp_cosmospaper/
+cvpr_page.html
+cvpr_debug.html
+
+# Tools
+git-filter-repo
+expressions.txt
+
 # Project specific
 ccs_2024.html
 analyze_ccs.py
 verify_iccv_2025.py
 test_selective.py
 verify_scrapers.py
-
-# Environment variables (NEVER commit!)
-.env
-
-# SSH Keys (NEVER commit!)
-*.pem
-*.key
-
-# Tools
-git-filter-repo
-expressions.txt
