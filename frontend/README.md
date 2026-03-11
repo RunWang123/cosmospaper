@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Frontend
 
-## Getting Started
+Next.js 16 + React 19 + TypeScript frontend for CosmosPapers.
 
-First, run the development server:
+## Development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Opens at `http://localhost:3000`. The backend API is expected at `http://localhost:8000` (proxied via Next.js config in production or Nginx).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Pages
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Route         | File                          | Description                          |
+|---------------|-------------------------------|--------------------------------------|
+| `/`           | `src/app/page.tsx`            | Paper search, filters, and listing   |
+| `/bookmarks`  | `src/app/bookmarks/page.tsx`  | Bookmarked papers + recommendations  |
+| `/trends`     | `src/app/trends/page.tsx`     | BERTopic topic explorer and charts   |
 
-## Learn More
+## Key Components
 
-To learn more about Next.js, take a look at the following resources:
+| Component             | Description                                                 |
+|-----------------------|-------------------------------------------------------------|
+| `Navbar`              | Top navigation bar with links and branding                  |
+| `PaperCard`           | Renders a single paper with title, authors, tags, actions   |
+| `CopilotChat`         | AI chat panel — summarize, Q&A, BibTeX generation           |
+| `CopilotChatWrapper`  | Lazy-loads CopilotChat to keep initial bundle small         |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Hooks
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **`useBookmarks`** — Browser-cached bookmark store with add/remove/check helpers.
 
-## Deploy on Vercel
+## Types
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Paper and API response types are defined in [`src/types.ts`](src/types.ts).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Build
+
+```bash
+npm run build
+npm start
+```
+
+The production Docker image is built from [`Dockerfile`](Dockerfile).
