@@ -1,6 +1,6 @@
 # CosmosPapers
 
-**[cosmospapers.com](https://cosmospapers.com/)**
+**[cosmospapers.com](https://cosmospapers.com/)** | **[Discord](https://discord.com/invite/jumjZZVB)**
 
 CosmosPapers is a full-stack research paper aggregation and discovery platform. It scrapes, indexes, and surfaces accepted papers from 15+ top-tier AI, Machine Learning, Computer Vision, and Security conferences spanning 2022 to 2026.
 
@@ -32,6 +32,7 @@ The platform provides semantic search powered by pgvector embeddings, interactiv
 - **Contextual Q&A** — Ask questions about specific papers and get grounded answers.
 - **BibTeX Generation** — Generate formatted citations from paper metadata.
 - **Multi-Provider Support** — Works with NVIDIA NIM and Microsoft AI Foundry models.
+- **Free API Keys** — Get free LLM API keys from [build.nvidia.com](https://build.nvidia.com) (NVIDIA NIM) and [Azure AI Foundry](https://ai.azure.com) (Microsoft).
 - **Privacy-First** — API keys are stored locally in the browser and never transmitted to our servers.
 
 ---
