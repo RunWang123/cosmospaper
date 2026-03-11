@@ -16,6 +16,8 @@ from scrapers.usenix_security import USENIXScraper
 from scrapers.ieee_sp import IEEESPScraper
 from scrapers.acm_ccs import ACMCCSScraper
 from scrapers.ieee_vis import IEEEVISScraper
+from scrapers.acm_chi import ACMCHIScraper
+from scrapers.siggraph import SIGGRAPHScraper
 from sqlalchemy import exists
 
 # Import embedding functions only if PostgreSQL is available
@@ -64,6 +66,10 @@ class Scanner:
             return ACMCCSScraper(conf_name, year)
         elif scraper_type == "IEEEVIS":
             return IEEEVISScraper(conf_name, year)
+        elif scraper_type == "ACMCHI":
+            return ACMCHIScraper(conf_name, year)
+        elif scraper_type == "SIGGRAPH":
+            return SIGGRAPHScraper(conf_name, year)
         else:
             return None
 

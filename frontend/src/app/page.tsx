@@ -8,6 +8,7 @@ import { Loader2, Sparkles, Menu, X, Trophy } from "lucide-react";
 
 const CONFERENCES = [
   "ACM CCS",
+  "ACM CHI",
   "CVPR",
   "ECCV",
   "ICCV",
@@ -17,6 +18,7 @@ const CONFERENCES = [
   "IEEE VIS",
   "NDSS",
   "NeurIPS",
+  "SIGGRAPH",
   "USENIX Security",
 ];
 

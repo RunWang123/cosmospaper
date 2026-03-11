@@ -107,6 +107,16 @@ body {
   color: #fff !important;
 }
 
+.badge-acm-chi {
+  background-color: #0284c7 !important;
+  color: #fff !important;
+}
+
+.badge-siggraph {
+  background-color: #be185d !important;
+  color: #fff !important;
+}
+
 .badge-default {
   background-color: #64748b !important;
   color: #fff !important;

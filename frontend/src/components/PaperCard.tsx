@@ -12,6 +12,7 @@ function getConferenceBadgeClass(conference: string): string {
     const conf = conference?.toUpperCase() || "";
     if (conf.includes("IEEE S&P") || conf.includes("IEEE SP")) return "badge-ieee-sp";
     if (conf.includes("ACM CCS") || conf.includes("CCS")) return "badge-acm-ccs";
+    if (conf.includes("ACM CHI") || conf.includes("CHI")) return "badge-acm-chi";
     if (conf.includes("NDSS")) return "badge-ndss";
     if (conf.includes("USENIX")) return "badge-usenix";
     if (conf.includes("CVPR")) return "badge-cvpr";
@@ -21,6 +22,7 @@ function getConferenceBadgeClass(conference: string): string {
     if (conf.includes("ICML")) return "badge-icml";
     if (conf.includes("ICLR")) return "badge-iclr";
     if (conf.includes("IEEE VIS") || conf.includes("VIS")) return "badge-ieee-vis";
+    if (conf.includes("SIGGRAPH")) return "badge-siggraph";
     return "badge-default";
 }
 

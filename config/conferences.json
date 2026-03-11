@@ -92,5 +92,23 @@
             "2023": "https://ieeevis.org/year/2023/program/event_v-full.html",
             "2024": "https://ieeevis.org/year/2024/program/event_v-full.html"
         }
+    },
+    "ACM CHI": {
+        "scraper": "ACMCHI",
+        "years": {
+            "2022": "https://dblp.org/db/conf/chi/chi2022.html",
+            "2023": "https://dblp.org/db/conf/chi/chi2023.html",
+            "2024": "https://dblp.org/db/conf/chi/chi2024.html",
+            "2025": "https://dblp.org/db/conf/chi/chi2025.html"
+        }
+    },
+    "SIGGRAPH": {
+        "scraper": "SIGGRAPH",
+        "years": {
+            "2022": "https://dblp.org/db/conf/siggraph/siggraph2022.html",
+            "2023": "https://dblp.org/db/conf/siggraph/siggraph2023.html",
+            "2024": "https://dblp.org/db/conf/siggraph/siggraph2024.html",
+            "2025": "https://dblp.org/db/conf/siggraph/siggraph2025.html"
+        }
     }
 }

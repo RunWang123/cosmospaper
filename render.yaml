@@ -1,0 +1,29 @@
+services:
+  # Web Service
+  - type: web
+    name: cosmospaper
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: DATABASE_URL
+        sync: false  # Set in Render dashboard → Environment → Add Secret
+    healthCheckPath: /
+    autoDeploy: true
+
+  # Cron Job - Weekly paper scraping (Sundays at 3 AM UTC)
+  - type: cron
+    name: paper-scraper-weekly
+    runtime: python
+    plan: free
+    schedule: "0 3 * * 0"  # Every Sunday at 3:00 AM UTC
+    buildCommand: pip install -r requirements.txt
+    startCommand: python scanner.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: DATABASE_URL
+        sync: false  # Set in Render dashboard → Environment → Add Secret
