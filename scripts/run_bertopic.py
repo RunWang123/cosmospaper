@@ -4,7 +4,7 @@ BERTopic Pipeline for CosmosPaper
 Run on Palmetto H100 to cluster 50k papers into topics.
 
 Usage:
-    python run_bertopic.py --db-url postgresql://db_user:CHANGE_ME@localhost:5432/paper_agg
+    python run_bertopic.py --db-url postgresql://user:password@localhost:5432/dbname
 """
 
 import argparse
