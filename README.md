@@ -1,6 +1,6 @@
 # CosmosPapers
 
-**[Live Demo](https://cosmospapers.com/)**
+**[cosmospapers.com](https://cosmospapers.com/)**
 
 CosmosPapers is a full-stack research paper aggregation and discovery platform. It scrapes, indexes, and surfaces accepted papers from 15+ top-tier AI, Machine Learning, Computer Vision, and Security conferences spanning 2022 to 2026.
 
